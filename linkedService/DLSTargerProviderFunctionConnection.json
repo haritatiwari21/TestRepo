@@ -1,0 +1,18 @@
+{
+	"name": "DLSTargerProviderFunctionConnection",
+	"properties": {
+		"annotations": [],
+		"type": "AzureFunction",
+		"typeProperties": {
+			"functionAppUrl": "https://dlstargetprocessor20201125160329.azurewebsites.net",
+			"functionKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "trainingkeyValutConnectionm",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "functionkey"
+			}
+		}
+	}
+}
