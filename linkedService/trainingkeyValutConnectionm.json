@@ -1,0 +1,10 @@
+{
+	"name": "trainingkeyValutConnectionm",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://haritakeyvault.vault.azure.net/"
+		}
+	}
+}
