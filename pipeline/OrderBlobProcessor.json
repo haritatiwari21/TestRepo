@@ -32,7 +32,37 @@
 					"items": {
 						"value": "@activity('Load Processable Blobs').outputactivity('Load Processable Blobs').output",
 						"type": "Expression"
-					}
+					},
+					"activities": [
+						{
+							"name": "DLSTargetProvider",
+							"type": "AzureFunctionActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"functionName": " DLSTargetProvider",
+								"method": "POST",
+								"headers": {
+									"x-functions-key": "p0AMxAfjxkaLWhqIzqNrA9InzF4nfxMWHZ/tM02MHCdma42Q6kvasA=="
+								},
+								"body": {
+									"blobPath": "/orders/abc/one.csv",
+									"blobName": "one.csv"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "DLSTargerProviderFunctionConnection",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
 				}
 			}
 		],
