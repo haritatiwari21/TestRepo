@@ -1,0 +1,19 @@
+{
+	"name": "BlobMetadataSqlConnection",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=haritasqlserverv2.database.windows.net;Initial Catalog=trainingsqldatabasev2;User ID=haritatiwari21",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "trainingkeyValutConnectionm",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "sqlpassword"
+			}
+		}
+	}
+}
