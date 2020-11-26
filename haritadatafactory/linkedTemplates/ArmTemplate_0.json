@@ -215,12 +215,13 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Load Processable Blobs').outputactivity('Load Processable Blobs').output",
+								"value": "@activity('Load Processable Blobs').output.value",
 								"type": "Expression"
 							},
+							"isSequential": true,
 							"activities": [
 								{
-									"name": "DLSTargetProvider",
+									"name": "Prepare DLS Target Info",
 									"type": "AzureFunctionActivity",
 									"dependsOn": [],
 									"policy": {
@@ -235,11 +236,12 @@
 										"functionName": " DLSTargetProvider",
 										"method": "POST",
 										"headers": {
-											"x-functions-key": "p0AMxAfjxkaLWhqIzqNrA9InzF4nfxMWHZ/tM02MHCdma42Q6kvasA=="
+											"Accept": "application/json",
+											"Content-Type": "application/json"
 										},
 										"body": {
-											"blobPath": "/orders/abc/one.csv",
-											"blobName": "one.csv"
+											"value": "@concat('{\"blobPath\":\"', item().Path, '\", \"blobName\":\"', item().BlobName, '\"}')",
+											"type": "Expression"
 										}
 									},
 									"linkedServiceName": {
