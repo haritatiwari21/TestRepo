@@ -7,9 +7,17 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "haritadatafactory"
 		},
+		"BlobMetadataSqlConnection_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'BlobMetadataSqlConnection'"
+		},
 		"trainingkeyValutConnectionm_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://haritakeyvault.vault.azure.net/"
+		},
+		"DLSTargerProviderFunctionConnection_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://dlstargetprocessor20201125160329.azurewebsites.net"
 		},
 		"containerUri": {
 			"type": "string",
@@ -38,8 +46,14 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"BlobMetadataSqlConnection_connectionString": {
+						"value": "[parameters('BlobMetadataSqlConnection_connectionString')]"
+					},
 					"trainingkeyValutConnectionm_properties_typeProperties_baseUrl": {
 						"value": "[parameters('trainingkeyValutConnectionm_properties_typeProperties_baseUrl')]"
+					},
+					"DLSTargerProviderFunctionConnection_properties_typeProperties_functionAppUrl": {
+						"value": "[parameters('DLSTargerProviderFunctionConnection_properties_typeProperties_functionAppUrl')]"
 					}
 				}
 			},

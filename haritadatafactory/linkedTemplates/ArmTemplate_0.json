@@ -7,9 +7,17 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "haritadatafactory"
 		},
+		"BlobMetadataSqlConnection_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'BlobMetadataSqlConnection'"
+		},
 		"trainingkeyValutConnectionm_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://haritakeyvault.vault.azure.net/"
+		},
+		"DLSTargerProviderFunctionConnection_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://dlstargetprocessor20201125160329.azurewebsites.net"
 		}
 	},
 	"variables": {
@@ -28,6 +36,228 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DLSTargerProviderFunctionConnection')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFunction",
+				"typeProperties": {
+					"functionAppUrl": "[parameters('DLSTargerProviderFunctionConnection_properties_typeProperties_functionAppUrl')]",
+					"functionKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "trainingkeyValutConnectionm",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "functionkey"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/trainingkeyValutConnectionm')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BlobMetadataSqlConnection')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('BlobMetadataSqlConnection_connectionString')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "trainingkeyValutConnectionm",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "sqlpassword"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/trainingkeyValutConnectionm')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BlobMetadataDataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobMetadataSqlConnection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "RecordId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RecordDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "BlobId",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BlobName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DisplayName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Path",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastModified",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "Size",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "MediaType",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsFolder",
+						"type": "bit"
+					},
+					{
+						"name": "ETag",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FileLocator",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ProcessStatus",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DLSTargetLocation",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "BlobMetadata"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobMetadataSqlConnection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OrderBlobProcessor')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This pipeline would processes incoming internet",
+				"activities": [
+					{
+						"name": "Load Processable Blobs",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[uspGetProcessableBlobs]",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "BlobMetadataDataset",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "Iterate Processable Blobs",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Load Processable Blobs",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Load Processable Blobs').outputactivity('Load Processable Blobs').output",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "DLSTargetProvider",
+									"type": "AzureFunctionActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"functionName": " DLSTargetProvider",
+										"method": "POST",
+										"headers": {
+											"x-functions-key": "p0AMxAfjxkaLWhqIzqNrA9InzF4nfxMWHZ/tM02MHCdma42Q6kvasA=="
+										},
+										"body": {
+											"blobPath": "/orders/abc/one.csv",
+											"blobName": "one.csv"
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "DLSTargerProviderFunctionConnection",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					}
+				],
+				"concurrency": 1,
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/BlobMetadataDataset')]",
+				"[concat(variables('factoryId'), '/linkedServices/DLSTargerProviderFunctionConnection')]"
+			]
 		}
 	]
 }

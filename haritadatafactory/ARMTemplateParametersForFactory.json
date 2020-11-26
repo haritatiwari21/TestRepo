@@ -5,8 +5,14 @@
 		"factoryName": {
 			"value": "haritadatafactory"
 		},
+		"BlobMetadataSqlConnection_connectionString": {
+			"value": ""
+		},
 		"trainingkeyValutConnectionm_properties_typeProperties_baseUrl": {
 			"value": "https://haritakeyvault.vault.azure.net/"
+		},
+		"DLSTargerProviderFunctionConnection_properties_typeProperties_functionAppUrl": {
+			"value": "https://dlstargetprocessor20201125160329.azurewebsites.net"
 		}
 	}
 }
