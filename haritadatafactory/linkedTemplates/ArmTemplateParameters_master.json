@@ -8,11 +8,17 @@
 		"BlobMetadataSqlConnection_connectionString": {
 			"value": ""
 		},
-		"trainingkeyValutConnectionm_properties_typeProperties_baseUrl": {
-			"value": "https://haritakeyvault.vault.azure.net/"
+		"OrganizedDLSConnection_accountKey": {
+			"value": ""
 		},
 		"DLSTargerProviderFunctionConnection_properties_typeProperties_functionAppUrl": {
 			"value": "https://dlstargetprocessor20201125160329.azurewebsites.net"
+		},
+		"OrganizedDLSConnection_properties_typeProperties_url": {
+			"value": "https://haritastorageacccount.dfs.core.windows.net"
+		},
+		"trainingkeyValutConnectionm_properties_typeProperties_baseUrl": {
+			"value": "https://haritakeyvault.vault.azure.net/"
 		},
 		"containerUri": {
 			"value": ""

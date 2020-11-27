@@ -11,13 +11,21 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'BlobMetadataSqlConnection'"
 		},
-		"trainingkeyValutConnectionm_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://haritakeyvault.vault.azure.net/"
+		"OrganizedDLSConnection_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'OrganizedDLSConnection'"
 		},
 		"DLSTargerProviderFunctionConnection_properties_typeProperties_functionAppUrl": {
 			"type": "string",
 			"defaultValue": "https://dlstargetprocessor20201125160329.azurewebsites.net"
+		},
+		"OrganizedDLSConnection_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://haritastorageacccount.dfs.core.windows.net"
+		},
+		"trainingkeyValutConnectionm_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://haritakeyvault.vault.azure.net/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -46,8 +54,14 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"OrganizedDLSConnection_accountKey": {
+						"value": "[parameters('OrganizedDLSConnection_accountKey')]"
+					},
 					"BlobMetadataSqlConnection_connectionString": {
 						"value": "[parameters('BlobMetadataSqlConnection_connectionString')]"
+					},
+					"OrganizedDLSConnection_properties_typeProperties_url": {
+						"value": "[parameters('OrganizedDLSConnection_properties_typeProperties_url')]"
 					},
 					"trainingkeyValutConnectionm_properties_typeProperties_baseUrl": {
 						"value": "[parameters('trainingkeyValutConnectionm_properties_typeProperties_baseUrl')]"
