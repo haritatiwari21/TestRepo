@@ -11,6 +11,9 @@
 		"OrganizedDLSConnection_accountKey": {
 			"value": ""
 		},
+		"OrdersBlobStorageConnection_connectionString": {
+			"value": ""
+		},
 		"DLSTargerProviderFunctionConnection_properties_typeProperties_functionAppUrl": {
 			"value": "https://dlstargetprocessor20201125160329.azurewebsites.net"
 		},
